@@ -1,0 +1,8 @@
+hbase/
+hbase_classes/
+wordcount/
+wordcount_classes/
+topten_classes/
+hellospark/
+*.jar
+.vscode/
