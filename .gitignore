@@ -4,5 +4,15 @@ wordcount/
 wordcount_classes/
 topten_classes/
 hellospark/
+lab1/src/id2221/notebooks/*
+lab1/src/id2221/notebooks/.ipynb_checkpoints/
 *.jar
 .vscode/
+env/
+
+# Exclude some files
+!.gitignore
+!README.md
+!lab1.pdf
+!lab1/src/id2221/notebooks/spark.ipynb
+!lab1/src/id2221/notebooks/sparksql.ipynb
