@@ -6,6 +6,7 @@ topten_classes/
 hellospark/
 lab1/src/id2221/notebooks/*
 lab1/src/id2221/notebooks/.ipynb_checkpoints/
+lab2/src/id2221/notebook/
 *.jar
 .vscode/
 env/
@@ -16,3 +17,5 @@ env/
 !lab1.pdf
 !lab1/src/id2221/notebooks/spark.ipynb
 !lab1/src/id2221/notebooks/sparksql.ipynb
+
+lab2/src/notebook/data/
