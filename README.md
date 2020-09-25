@@ -2,3 +2,4 @@
 
 **Labs**
 * `lab1`: Covers Hadoop, Spark, SparkSQL
+* `lab2`: Covers SparkStreaming, Kafka, Cassandra and GraphX
