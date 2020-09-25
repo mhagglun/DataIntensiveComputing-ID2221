@@ -7,15 +7,30 @@ hellospark/
 lab1/src/id2221/notebooks/*
 lab1/src/id2221/notebooks/.ipynb_checkpoints/
 lab2/src/id2221/notebook/
+lab2/src/notebook/data/
+lab2/src/generator/*
+lab2/src/sparkstreaming/*
 *.jar
 .vscode/
 env/
 
-# Exclude some files
+
+# Files to be whitelisted
 !.gitignore
 !README.md
-!lab1.pdf
+
+
+# Lab 1
+!lab1/src/id2221/lab1.pdf
 !lab1/src/id2221/notebooks/spark.ipynb
 !lab1/src/id2221/notebooks/sparksql.ipynb
 
-lab2/src/notebook/data/
+
+# Lab 2
+!lab2/src/lab2.pdf
+!lab2/src/generator/Producer.scala
+!lab2/src/generator/build.sbt
+
+!lab2/src/sparkstreaming/KafkaSpark.scala
+!lab2/src/sparkstreaming/build.sbt
+
