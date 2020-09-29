@@ -50,7 +50,8 @@ public class TopTen {
 		TreeMap<Integer, Text> repToRecordMap = new TreeMap<Integer, Text>();
 
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-			Map<String, String> user = TopTen.transformXmlToMap(value.toString()); // Use helper class to parse and map users.xml
+			Map<String, String> user = TopTen.transformXmlToMap(value.toString()); // Use helper class to parse and map
+																					// users.xml
 
 			String id = user.get("Id");
 			String rep = user.get("Reputation");
@@ -67,7 +68,7 @@ public class TopTen {
 		protected void cleanup(Context context) throws IOException, InterruptedException {
 			// Output our ten records to the reducers with a null key
 			try {
-				for(int i = 0; i < 10; i++) {
+				for (int i = 0; i < 10; i++) {
 					// Remove and return key-value pair with greatest key (reputation)
 					Map.Entry<Integer, Text> entry = repToRecordMap.pollLastEntry();
 					context.write(NullWritable.get(), new Text(entry.getValue())); // Overwrite key with null
@@ -75,7 +76,7 @@ public class TopTen {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
 
@@ -83,8 +84,9 @@ public class TopTen {
 		// Stores a map of user reputation to the record
 		private TreeMap<Text, Text> repToRecordMap = new TreeMap<Text, Text>();
 
-		public void reduce(NullWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			
+		public void reduce(NullWritable key, Iterable<Text> values, Context context)
+				throws IOException, InterruptedException {
+
 			for (Text value : values) {
 				Map<String, String> user = TopTen.transformXmlToMap(value.toString());
 				String rep = user.get("Reputation");
@@ -92,25 +94,31 @@ public class TopTen {
 
 				// Add this record to our map with the reputation as the key
 				repToRecordMap.put(new Text(rep), new Text(id));
-		
-				// Prune TreeMap if it happens to have more than 10 records, removes user with least rep
+
+				// Prune TreeMap if it happens to have more than 10 records, removes user with
+				// least rep
 				if (repToRecordMap.size() > 10) {
-					// Remove first element since its sorted by reputation (integer) in ascending order
+					// Remove first element since its sorted by reputation (integer) in ascending
+					// order
 					repToRecordMap.remove(repToRecordMap.firstKey());
 				}
 			}
 
-
-			/* Once all the values have been iterated over, the values of Id and Reputation contained in the TreeMap should be stored
-			   in the table topten in HBase. Store into the columns info:rep and info:id.*/
+			/*
+			 * Once all the values have been iterated over, the values of Id and Reputation
+			 * contained in the TreeMap should be stored in the table topten in HBase. Store
+			 * into the columns info:rep and info:id.
+			 */
 			try {
 				int i = 0;
 				for (Map.Entry<Text, Text> entry : repToRecordMap.descendingMap().entrySet()) {
 					// Create put operation to add record to HBase
 					Put putHBase = new Put(Bytes.toBytes(Integer.toString(i)));
-					putHBase.addColumn(Bytes.toBytes("info"), Bytes.toBytes("rep"), Bytes.toBytes(entry.getKey().toString()));
-					putHBase.addColumn(Bytes.toBytes("info"), Bytes.toBytes("id"), Bytes.toBytes(entry.getValue().toString()));
-			
+					putHBase.addColumn(Bytes.toBytes("info"), Bytes.toBytes("rep"),
+							Bytes.toBytes(entry.getKey().toString()));
+					putHBase.addColumn(Bytes.toBytes("info"), Bytes.toBytes("id"),
+							Bytes.toBytes(entry.getValue().toString()));
+
 					// write data to HBase table
 					context.write(null, putHBase);
 					i++;
@@ -125,20 +133,19 @@ public class TopTen {
 		Configuration conf = new Configuration();
 		Job job = Job.getInstance(conf, "TopTen");
 		job.setJarByClass(TopTen.class);
-		
+
 		job.setMapperClass(TopTenMapper.class);
 		job.setReducerClass(TopTenReducer.class);
-		
+
 		job.setNumReduceTasks(1); // Multiple reducers would shard the data, resulting in multiple top ten lists
-		
+
 		job.setMapOutputKeyClass(NullWritable.class);
 		job.setMapOutputValueClass(Text.class);
-		
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-		
-		TableMapReduceUtil.initTableReducerJob("topten", TopTenReducer.class, job); //start job
+
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+
+		TableMapReduceUtil.initTableReducerJob("topten", TopTenReducer.class, job); // start job
 
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
-    }
+	}
 }
